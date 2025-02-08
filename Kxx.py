@@ -1,6 +1,6 @@
 import logging
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Application, CommandHandler, MessageHandler, filters, CallbackContext
 import sqlite3
 
 # Logging ဖွင့်ခြင်း
@@ -97,20 +97,18 @@ def main():
     init_db()
 
     # Updater နဲ့ Dispatcher ကို set up လုပ်ပါ
-    updater = Updater("7509251415:AAEW2B-TOwHUF7aQmez1fr_6pf6oil7me8M", use_context=True)
-    dp = updater.dispatcher
-
+    application = Application.builder().token("7509251415:AAEW2B-TOwHUF7aQmez1fr_6pf6oil7me8M").build()
+    
     # Command Handlers ထည့်ပါ
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(CommandHandler("markpaid", mark_paid))
-    dp.add_handler(CommandHandler("blockuser", block_user))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("markpaid", mark_paid))
+    application.add_handler(CommandHandler("blockuser", block_user))
 
     # Message Handler ထည့်ပါ
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # Bot ကို start လုပ်ပါ
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == '__main__':
     main()
